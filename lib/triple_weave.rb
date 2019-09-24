@@ -11,19 +11,26 @@ module TripleWeave
   CLOTH_TWO = T.let(2, Integer)
   CLOTH_THREE = T.let(3, Integer)
 
-  sig { params(face: Integer, middle: Integer, reverse: Integer, block_a: Block, block_b: Block).returns(T::Array[Treadle]) }
-  def self.treadling_for(face, middle, reverse, block_a, block_b)
-    pick1 = [odd_shaft_for(face, block_a), shafts_except(T.must(even_shaft_for(face, block_b)), block_b)]
-    pick2 = [even_shaft_for(face, block_a), shafts_except(T.must(odd_shaft_for(face, block_b)), block_b)]
-    pick3 = [shafts_for(face, block_a), odd_shaft_for(middle, block_a), odd_shaft_for(middle, block_b), shafts_for(reverse, block_b)]
-    pick4 = [shafts_for(face, block_a), even_shaft_for(middle, block_a), even_shaft_for(middle, block_b), shafts_for(reverse, block_b)]
-    pick5 = [shafts_except(T.must(even_shaft_for(reverse, block_a)), block_a), odd_shaft_for(reverse, block_b)]
-    pick6 = [shafts_except(T.must(odd_shaft_for(reverse, block_a)), block_a), even_shaft_for(reverse, block_b)]
+  sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[T::Array[Integer]]) }
+  def self.treadling_for(face, middle, reverse, block)
+    pick1 = [odd_shaft_for(face, block)]
+    pick2 = [even_shaft_for(face, block)]
+    pick3 = [shafts_for(face, block), odd_shaft_for(middle, block)]
+    pick4 = [shafts_for(face, block), even_shaft_for(middle, block)]
+    pick5 = [shafts_except(T.must(even_shaft_for(reverse, block)), block)]
+    pick6 = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)]
 
+    [pick1, pick2, pick3, pick4, pick5, pick6].map(&:flatten).map(&:sort)
+  end
+
+  sig { params(shafts_for_a: T::Array[T::Array[Integer]], shafts_for_b: T::Array[T::Array[Integer]]).returns(T::Array[Treadle]) }
+  def self.treadling(shafts_for_a, shafts_for_b)
     treadling = []
-    [pick1, pick2, pick3, pick4, pick5, pick6].each_with_index do |p, i|
-      shafts = p.flatten.sort
-      treadling << Treadle.new(shafts, i + 1)
+    shafts_for_b.reverse # weave block b "upside down"
+
+    shafts_for_a.each_with_index do |shafts, i|
+      pick = (shafts + shafts_for_b[i])
+      treadling << Treadle.new(pick, i + 1)
     end
     treadling
   end

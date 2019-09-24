@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 require 'sorbet-runtime'
 
 require 'entities'
@@ -7,7 +7,7 @@ require 'entities'
 # and weaving plan
 class Draft
   attr_reader :profile, :tieup, :treadling
-  
+
   def initialize(profile, tieup, treadling)
     @profile = profile # type Profile
     @tieup = tieup # type Tieup
@@ -18,12 +18,12 @@ class Draft
     acc = []
 
     @treadling.each do |treadle|
-        pick = []
-        shafts = Set.new(treadle.shafts)
-        threading.each do |heddle|
-            shafts.include?(heddle.shaft) ? pick.append(heddle.color) : pick.append('#FFF')
-        end
-        acc.append(pick)
+      pick = []
+      shafts = Set.new(treadle.shafts)
+      threading.each do |heddle|
+        shafts.include?(heddle.shaft) ? pick.append(heddle.color) : pick.append('#FFF')
+      end
+      acc.append(pick)
     end
 
     acc
@@ -33,4 +33,3 @@ class Draft
     @profile.blocks.map(&:units).flatten.map(&:threading).reduce([]) { |u1, u2| u1 + u2 }
   end
 end
-

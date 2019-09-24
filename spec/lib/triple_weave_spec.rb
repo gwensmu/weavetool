@@ -4,10 +4,10 @@
 require '/Users/gwensmuda/dev/weavetool/lib/triple_weave.rb'
 
 RSpec.describe 'TripleWeave' do
-  let(:yellow) { "yellow" }
-  let(:green) {"green"}
-  let(:blue) {"blue"}
-  
+  let(:yellow) { 'yellow' }
+  let(:green) { 'green' }
+  let(:blue) { 'blue' }
+
   let(:block_a) do
     h1 = Heddle.new(1, yellow, TripleWeave::CLOTH_ONE)
     h2 = Heddle.new(2, yellow, TripleWeave::CLOTH_ONE)
@@ -35,18 +35,40 @@ RSpec.describe 'TripleWeave' do
   end
 
   it 'can figure out the treadling for supplied color pairings' do
-    pick1 = Treadle.new([5, 7, 8, 9, 10, 11], 1)
-    pick2 = Treadle.new([6, 7, 8, 9, 10, 12], 2)
-    pick3 = Treadle.new([1, 5, 6, 7, 9, 10], 3)
-    pick4 = Treadle.new([2, 5, 6, 8, 9, 10], 4)
-    pick5 = Treadle.new([1, 2, 3, 5, 6, 9], 5)
-    pick6 = Treadle.new([1, 2, 4, 5, 6, 10], 6)
+    pick1 = Treadle.new([5, 7, 8, 9, 10, 12], 1)
+    pick2 = Treadle.new([6, 7, 8, 9, 10, 11], 2)
+    pick3 = Treadle.new([1, 5, 6, 8, 9, 10], 3)
+    pick4 = Treadle.new([2, 5, 6, 7, 9, 10], 4)
+    pick5 = Treadle.new([1, 2, 3, 5, 6, 10], 5)
+    pick6 = Treadle.new([1, 2, 4, 5, 6, 9], 6)
 
-    treadling = TripleWeave.treadling_for(TripleWeave::CLOTH_THREE,
-                                          TripleWeave::CLOTH_ONE,
-                                          TripleWeave::CLOTH_TWO,
-                                          block_a,
-                                          block_b)
+    shafts_for_a = TripleWeave.treadling_for(TripleWeave::CLOTH_THREE,
+                                             TripleWeave::CLOTH_ONE,
+                                             TripleWeave::CLOTH_TWO,
+                                             block_a)
+    shafts_for_b = TripleWeave.treadling_for(TripleWeave::CLOTH_TWO,
+                                             TripleWeave::CLOTH_ONE,
+                                             TripleWeave::CLOTH_THREE,
+                                             block_b).reverse
+    expect(shafts_for_a[0]).to match [5]
+    expect(shafts_for_b[0]).to match [7, 8, 9, 10, 12]
+
+    expect(shafts_for_a[1]).to match [6]
+    expect(shafts_for_b[1]).to match [7, 8, 9, 10, 11]
+
+    expect(shafts_for_a[2]).to match [1, 5, 6]
+    expect(shafts_for_b[2]).to match [8, 9, 10]
+
+    expect(shafts_for_a[3]).to match [2, 5, 6]
+    expect(shafts_for_b[3]).to match [7, 9, 10]
+
+    expect(shafts_for_a[4]).to match [1, 2, 3, 5, 6]
+    expect(shafts_for_b[4]).to match [10]
+
+    expect(shafts_for_a[5]).to match [1, 2, 4, 5, 6]
+    expect(shafts_for_b[5]).to match [9]
+
+    treadling = TripleWeave.treadling(shafts_for_a, shafts_for_b)
 
     expect(treadling[0].shafts).to match pick1.shafts
     expect(treadling[1].shafts).to match pick2.shafts
