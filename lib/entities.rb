@@ -114,11 +114,13 @@ class Pick
   sig { returns(String) }
   attr_reader :color
 
+  sig {params(treadle: T.untyped, color: T.untyped).void}
   def initialize(treadle, color)
     @treadle = T.let(treadle, Treadle)
     @color = T.let(color, String)
   end
 
+  sig {returns(T::Array[Integer])}
   def shafts 
     @treadle.shafts
   end

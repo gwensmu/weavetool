@@ -13,12 +13,13 @@ module TripleWeave
   CLOTH_TWO = T.let(2, Integer)
   CLOTH_THREE = T.let(3, Integer)
 
+  sig {params(face: Integer, middle: Integer, reverse: Integer, block_a: Block, block_b: Block).returns(T.nilable(IO))}
   def self.treadling_plan(face, middle, reverse, block_a, block_b)
     a_picks = treadling_for(face, middle, reverse, block_a)
     b_picks = treadling_for(face, middle, reverse, block_b)
 
     @treadling = treadling(a_picks, b_picks.reverse)
-  
+
     template_path = File.join(File.dirname(__FILE__), "../views/triple_weave_treadling.erb")
     plan = ERB.new(File.read(template_path)).result binding
 
@@ -27,7 +28,6 @@ module TripleWeave
     }
   end
 
-  # want picks to have a thread color attached
   sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[Pick]) }
   def self.treadling_for(face, middle, reverse, block)
     pick1_shafts = [odd_shaft_for(face, block)].flatten.sort
@@ -37,12 +37,12 @@ module TripleWeave
     pick5_shafts = [shafts_except(T.must(even_shaft_for(reverse, block)), block)].flatten.sort
     pick6_shafts = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)].flatten.sort
 
-    pick1 = Pick.new(Treadle.new(pick1_shafts, 1), block.unit.threading[0].color)
-    pick2 = Pick.new(Treadle.new(pick2_shafts, 2), block.unit.threading[1].color)
-    pick3 = Pick.new(Treadle.new(pick3_shafts, 3), block.unit.threading[2].color)
-    pick4 = Pick.new(Treadle.new(pick4_shafts, 4), block.unit.threading[3].color)
-    pick5 = Pick.new(Treadle.new(pick5_shafts, 5), block.unit.threading[4].color)
-    pick6 = Pick.new(Treadle.new(pick6_shafts, 6), block.unit.threading[5].color)
+    pick1 = Pick.new(Treadle.new(pick1_shafts, 1), T.must(block.unit.threading[0]).color)
+    pick2 = Pick.new(Treadle.new(pick2_shafts, 2), T.must(block.unit.threading[1]).color)
+    pick3 = Pick.new(Treadle.new(pick3_shafts, 3), T.must(block.unit.threading[2]).color)
+    pick4 = Pick.new(Treadle.new(pick4_shafts, 4), T.must(block.unit.threading[3]).color)
+    pick5 = Pick.new(Treadle.new(pick5_shafts, 5), T.must(block.unit.threading[4]).color)
+    pick6 = Pick.new(Treadle.new(pick6_shafts, 6), T.must(block.unit.threading[5]).color)
 
     [pick1, pick2, pick3, pick4, pick5, pick6]
   end
@@ -53,8 +53,8 @@ module TripleWeave
     picks_for_b.reverse # weave block b "upside down"
 
     picks_for_a.each_with_index do |pick, i|
-      combined_shafts = (pick.shafts + T.must(picks_for_b[i].shafts))
-      weft_color = assign_weft_color(i, pick.color, picks_for_b[0].color)
+      combined_shafts = (pick.shafts + T.must(picks_for_b[i]).shafts)
+      weft_color = assign_weft_color(i, pick.color, T.must(picks_for_b[0]).color)
       treadling << Pick.new(Treadle.new(combined_shafts, i + 1), weft_color)
     end
     treadling

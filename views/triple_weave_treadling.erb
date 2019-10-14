@@ -3,9 +3,9 @@
 </head>
 
 <body>
-  <div id="container" style="width:300px;margin:10px;">
+  <div id="container" style="width:120px;margin:10px;border:2px;border-style:solid;">
     <% for @pick in @treadling %>
-      <div style="padding:2px;background-color:<%= @pick.color %>;">
+      <div style="margin:10px;padding:2px;background-color:<%= @pick.color %>;">
         <%= @pick.shafts.join(" ") %> 
       </div>
     <% end %>
