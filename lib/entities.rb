@@ -24,6 +24,7 @@ end
 # which decribes one  repeat of the threading pattern
 class Unit
   extend T::Sig
+  
   sig { returns(T::Array[Heddle]) }
   attr_reader :threading
 
@@ -41,6 +42,10 @@ end
 # A collection of identical units
 class Block
   extend T::Sig
+
+  sig { returns(Unit) }
+  attr_reader :unit
+
   sig { params(unit: T.untyped, count: T.untyped).void }
   def initialize(unit, count)
     @unit = T.let(unit, Unit)
@@ -96,5 +101,25 @@ class Tieup
   sig { params(treadles: T::Array[Treadle]).void }
   def initialize(treadles)
     @treadles = T.let(treadles, T::Array[Treadle])
+  end
+end
+
+# A treadling + a yarn color
+class Pick
+  extend T::Sig
+
+  sig { returns(Treadle) }
+  attr_reader :treadle
+
+  sig { returns(String) }
+  attr_reader :color
+
+  def initialize(treadle, color)
+    @treadle = T.let(treadle, Treadle)
+    @color = T.let(color, String)
+  end
+
+  def shafts 
+    @treadle.shafts
   end
 end

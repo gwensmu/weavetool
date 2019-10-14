@@ -1,7 +1,6 @@
 # typed: false
 
-# fix imports
-require '/Users/gwensmuda/dev/weavetool/lib/entities.rb'
+require 'entities'
 
 RSpec.describe 'Heddle' do
   it 'can be initialized' do

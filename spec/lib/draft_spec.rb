@@ -1,7 +1,6 @@
 # typed: false
 
-# fix imports
-require '/Users/gwensmuda/dev/weavetool/lib/draft.rb'
+require 'draft'
 
 RSpec.describe 'Draft' do
   let(:h1) { Heddle.new(1, 'green') }
@@ -53,6 +52,10 @@ RSpec.describe 'Draft' do
       expect(pick[1]).to eq '#FFF'
       expect(pick[2]).to eq '#FFF'
       expect(pick[3]).to eq '#FFF'
+    end
+
+    it 'can render the drawdown as an svg' do
+      draft.render_drawdown
     end
   end
 end

@@ -1,0 +1,14 @@
+<html>
+<head>
+</head>
+
+<body>
+  <div id="container" style="width:300px;margin:10px;">
+    <% for @pick in @treadling %>
+      <div style="padding:2px;background-color:<%= @pick.color %>;">
+        <%= @pick.shafts.join(" ") %> 
+      </div>
+    <% end %>
+  </div>
+</body>
+</html>

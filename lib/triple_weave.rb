@@ -1,8 +1,10 @@
 # typed: strict
 require 'sorbet-runtime'
 
-require 'entities'
-require 'draft'
+require 'erb'
+
+require_relative 'entities'
+require_relative 'draft'
 
 # Helpers for drafting triple weave
 module TripleWeave
@@ -11,28 +13,56 @@ module TripleWeave
   CLOTH_TWO = T.let(2, Integer)
   CLOTH_THREE = T.let(3, Integer)
 
-  sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[T::Array[Integer]]) }
-  def self.treadling_for(face, middle, reverse, block)
-    pick1 = [odd_shaft_for(face, block)]
-    pick2 = [even_shaft_for(face, block)]
-    pick3 = [shafts_for(face, block), odd_shaft_for(middle, block)]
-    pick4 = [shafts_for(face, block), even_shaft_for(middle, block)]
-    pick5 = [shafts_except(T.must(even_shaft_for(reverse, block)), block)]
-    pick6 = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)]
+  def self.treadling_plan(face, middle, reverse, block_a, block_b)
+    a_picks = treadling_for(face, middle, reverse, block_a)
+    b_picks = treadling_for(face, middle, reverse, block_b)
 
-    [pick1, pick2, pick3, pick4, pick5, pick6].map(&:flatten).map(&:sort)
+    @treadling = treadling(a_picks, b_picks.reverse)
+  
+    template_path = File.join(File.dirname(__FILE__), "../views/triple_weave_treadling.erb")
+    plan = ERB.new(File.read(template_path)).result binding
+
+    open('plan.html', 'w') { |f|
+      f.puts plan
+    }
   end
 
-  sig { params(shafts_for_a: T::Array[T::Array[Integer]], shafts_for_b: T::Array[T::Array[Integer]]).returns(T::Array[Treadle]) }
-  def self.treadling(shafts_for_a, shafts_for_b)
-    treadling = []
-    shafts_for_b.reverse # weave block b "upside down"
+  # want picks to have a thread color attached
+  sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[Pick]) }
+  def self.treadling_for(face, middle, reverse, block)
+    pick1_shafts = [odd_shaft_for(face, block)].flatten.sort
+    pick2_shafts = [even_shaft_for(face, block)].flatten.sort
+    pick3_shafts = [shafts_for(face, block), odd_shaft_for(middle, block)].flatten.sort
+    pick4_shafts = [shafts_for(face, block), even_shaft_for(middle, block)].flatten.sort
+    pick5_shafts = [shafts_except(T.must(even_shaft_for(reverse, block)), block)].flatten.sort
+    pick6_shafts = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)].flatten.sort
 
-    shafts_for_a.each_with_index do |shafts, i|
-      pick = (shafts + shafts_for_b[i])
-      treadling << Treadle.new(pick, i + 1)
+    pick1 = Pick.new(Treadle.new(pick1_shafts, 1), block.unit.threading[0].color)
+    pick2 = Pick.new(Treadle.new(pick2_shafts, 2), block.unit.threading[1].color)
+    pick3 = Pick.new(Treadle.new(pick3_shafts, 3), block.unit.threading[2].color)
+    pick4 = Pick.new(Treadle.new(pick4_shafts, 4), block.unit.threading[3].color)
+    pick5 = Pick.new(Treadle.new(pick5_shafts, 5), block.unit.threading[4].color)
+    pick6 = Pick.new(Treadle.new(pick6_shafts, 6), block.unit.threading[5].color)
+
+    [pick1, pick2, pick3, pick4, pick5, pick6]
+  end
+
+  sig { params(picks_for_a: T::Array[Pick], picks_for_b: T::Array[Pick]).returns(T::Array[Pick]) }
+  def self.treadling(picks_for_a, picks_for_b)
+    treadling = []
+    picks_for_b.reverse # weave block b "upside down"
+
+    picks_for_a.each_with_index do |pick, i|
+      combined_shafts = (pick.shafts + T.must(picks_for_b[i].shafts))
+      weft_color = assign_weft_color(i, pick.color, picks_for_b[0].color)
+      treadling << Pick.new(Treadle.new(combined_shafts, i + 1), weft_color)
     end
     treadling
+  end
+
+  sig { params(i: Integer, color_a: String, color_b: String).returns(String) }
+  def self.assign_weft_color(i, color_a, color_b)
+    i <= 3 ? color_a : color_b
   end
 
   sig { params(cloth: Integer, block: Block).returns(T.nilable(Integer)) }

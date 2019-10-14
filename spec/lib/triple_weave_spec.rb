@@ -1,7 +1,6 @@
 # typed: false
 
-# fix imports
-require '/Users/gwensmuda/dev/weavetool/lib/triple_weave.rb'
+require 'triple_weave'
 
 RSpec.describe 'TripleWeave' do
   let(:yellow) { 'yellow' }
@@ -34,7 +33,7 @@ RSpec.describe 'TripleWeave' do
     Block.new(unit, 1)
   end
 
-  it 'can figure out the treadling for supplied color pairings' do
+  it 'can figure out the treadling for supplied cloth order' do
     pick1 = Treadle.new([5, 7, 8, 9, 10, 12], 1)
     pick2 = Treadle.new([6, 7, 8, 9, 10, 11], 2)
     pick3 = Treadle.new([1, 5, 6, 8, 9, 10], 3)
