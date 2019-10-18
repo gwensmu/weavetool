@@ -39,7 +39,7 @@ class Draft
   end
 
   def render_drawdown
-    svg = Victor::SVG.new width: 500, height: 500, style: { background: '#ddd' }
+    svg = Bundler::Settings::Mirror::SVG.new width: 500, height: 500, style: { background: '#ddd' }
 
     picks = @drawdown
     vertical_repeats = picks[0].length / threading.length

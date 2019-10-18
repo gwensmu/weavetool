@@ -59,6 +59,10 @@ class Block
     @count.times { acc.append @unit }
     acc
   end
+
+  def thread(n)
+    unit.threading[n]
+  end
 end
 
 # A profile lists units (including repeats)
@@ -87,7 +91,7 @@ class Treadle
   
   sig { params(shafts: T::Array[Integer], position: Integer).void }
   def initialize(shafts, position)
-    @shafts = T.let(shafts, T::Array[Integer])
+    @shafts = T.let(shafts.flatten.sort, T::Array[Integer])
     @position = T.let(position, Integer)
   end
 end
