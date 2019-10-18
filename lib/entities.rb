@@ -3,6 +3,7 @@
 require 'sorbet-runtime'
 
 # A heddle holds a single thread of a given color, and sits on a shaft
+# We denote which "cloth" its in for multiweaves
 class Heddle
   extend T::Sig
 

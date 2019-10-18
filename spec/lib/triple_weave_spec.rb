@@ -41,33 +41,33 @@ RSpec.describe 'TripleWeave' do
     pick5 = Treadle.new([1, 2, 3, 5, 6, 10], 5)
     pick6 = Treadle.new([1, 2, 4, 5, 6, 9], 6)
 
-    shafts_for_a = TripleWeave.treadling_for(TripleWeave::CLOTH_THREE,
+    picks_for_a = TripleWeave.treadling_for(TripleWeave::CLOTH_THREE,
                                              TripleWeave::CLOTH_ONE,
                                              TripleWeave::CLOTH_TWO,
                                              block_a)
-    shafts_for_b = TripleWeave.treadling_for(TripleWeave::CLOTH_TWO,
+    picks_for_b = TripleWeave.treadling_for(TripleWeave::CLOTH_TWO,
                                              TripleWeave::CLOTH_ONE,
                                              TripleWeave::CLOTH_THREE,
                                              block_b).reverse
-    expect(shafts_for_a[0]).to match [5]
-    expect(shafts_for_b[0]).to match [7, 8, 9, 10, 12]
+    expect(picks_for_a[0].treadle.shafts).to match [5]
+    expect(picks_for_b[0].treadle.shafts).to match [7, 8, 9, 10, 12]
 
-    expect(shafts_for_a[1]).to match [6]
-    expect(shafts_for_b[1]).to match [7, 8, 9, 10, 11]
+    expect(picks_for_a[1].treadle.shafts).to match [6]
+    expect(picks_for_b[1].treadle.shafts).to match [7, 8, 9, 10, 11]
 
-    expect(shafts_for_a[2]).to match [1, 5, 6]
-    expect(shafts_for_b[2]).to match [8, 9, 10]
+    expect(picks_for_a[2].treadle.shafts).to match [1, 5, 6]
+    expect(picks_for_b[2].treadle.shafts).to match [8, 9, 10]
 
-    expect(shafts_for_a[3]).to match [2, 5, 6]
-    expect(shafts_for_b[3]).to match [7, 9, 10]
+    expect(picks_for_a[3].treadle.shafts).to match [2, 5, 6]
+    expect(picks_for_b[3].treadle.shafts).to match [7, 9, 10]
 
-    expect(shafts_for_a[4]).to match [1, 2, 3, 5, 6]
-    expect(shafts_for_b[4]).to match [10]
+    expect(picks_for_a[4].treadle.shafts).to match [1, 2, 3, 5, 6]
+    expect(picks_for_b[4].treadle.shafts).to match [10]
 
-    expect(shafts_for_a[5]).to match [1, 2, 4, 5, 6]
-    expect(shafts_for_b[5]).to match [9]
+    expect(picks_for_a[5].treadle.shafts).to match [1, 2, 4, 5, 6]
+    expect(picks_for_b[5].treadle.shafts).to match [9]
 
-    treadling = TripleWeave.treadling(shafts_for_a, shafts_for_b)
+    treadling = TripleWeave.treadling(picks_for_a, picks_for_b)
 
     expect(treadling[0].shafts).to match pick1.shafts
     expect(treadling[1].shafts).to match pick2.shafts

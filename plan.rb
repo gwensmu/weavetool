@@ -25,6 +25,24 @@ h12 = Heddle.new(12, blue, TripleWeave::CLOTH_THREE)
 unit = Unit.new([h7, h9, h11, h8, h10, h12])
 block_b = Block.new(unit, 1)
 
-TripleWeave.treadling_plan(TripleWeave::CLOTH_THREE,
+@plans = []
+
+# treadling plan needs to allow for what cloth is on top in what block
+@plans << TripleWeave.treadling_plan(TripleWeave::CLOTH_THREE,
                            TripleWeave::CLOTH_ONE,
                            TripleWeave::CLOTH_TWO, block_a, block_b)
+
+@plans << TripleWeave.treadling_plan(TripleWeave::CLOTH_TWO,
+TripleWeave::CLOTH_ONE,
+TripleWeave::CLOTH_THREE, block_a, block_b)
+                           
+@plans << TripleWeave.treadling_plan(TripleWeave::CLOTH_ONE,
+TripleWeave::CLOTH_THREE,
+TripleWeave::CLOTH_TWO, block_a, block_b)
+
+template_path = File.join(File.dirname(__FILE__), "./views/triple_weave_treadling.erb")
+plan = ERB.new(File.read(template_path)).result binding
+
+open('plan.html', 'w') { |f|
+  f.puts plan
+}

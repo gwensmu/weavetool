@@ -13,19 +13,13 @@ module TripleWeave
   CLOTH_TWO = T.let(2, Integer)
   CLOTH_THREE = T.let(3, Integer)
 
-  sig {params(face: Integer, middle: Integer, reverse: Integer, block_a: Block, block_b: Block).returns(T.nilable(IO))}
+  sig {params(face: Integer, middle: Integer, reverse: Integer, block_a: Block, block_b: Block).returns(T::Array[Pick])}
   def self.treadling_plan(face, middle, reverse, block_a, block_b)
+    # {face: face, middle: middle, reverse: reverse, block: block}
     a_picks = treadling_for(face, middle, reverse, block_a)
     b_picks = treadling_for(face, middle, reverse, block_b)
 
-    @treadling = treadling(a_picks, b_picks.reverse)
-
-    template_path = File.join(File.dirname(__FILE__), "../views/triple_weave_treadling.erb")
-    plan = ERB.new(File.read(template_path)).result binding
-
-    open('plan.html', 'w') { |f|
-      f.puts plan
-    }
+    treadling(a_picks, b_picks.reverse)
   end
 
   sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[Pick]) }
@@ -60,9 +54,9 @@ module TripleWeave
     treadling
   end
 
-  sig { params(i: Integer, color_a: String, color_b: String).returns(String) }
-  def self.assign_weft_color(i, color_a, color_b)
-    i <= 3 ? color_a : color_b
+  sig { params(shaft_index: Integer, color_a: String, color_b: String).returns(String) }
+  def self.assign_weft_color(shaft_index, color_a, color_b)
+    shaft_index <= 3 ? color_a : color_b
   end
 
   sig { params(cloth: Integer, block: Block).returns(T.nilable(Integer)) }
