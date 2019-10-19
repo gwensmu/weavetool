@@ -56,7 +56,7 @@ class Draft
       vertical_repeats.times do |v|
         rows.each_with_index do |row, i|
           row.each_with_index.each do |cell, y|
-            rect x: 10*i, y: (10*y) + (10*v), width: 10, height: 10, fill: cell
+            svg.rect x: 10*i, y: (10*y) + (10*v), width: 10, height: 10, fill: cell
           end
         end
       end
