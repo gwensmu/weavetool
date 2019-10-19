@@ -31,14 +31,13 @@ module TripleWeave
     pick5_shafts = [shafts_except(T.must(even_shaft_for(reverse, block)), block)]
     pick6_shafts = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)]
 
-    pick1 = Pick.new(Treadle.new(pick1_shafts, 1), T.must(block.thread(0)).color)
-    pick2 = Pick.new(Treadle.new(pick2_shafts, 2), T.must(block.thread(1)).color)
-    pick3 = Pick.new(Treadle.new(pick3_shafts, 3), T.must(block.thread(2)).color)
-    pick4 = Pick.new(Treadle.new(pick4_shafts, 4), T.must(block.thread(3)).color)
-    pick5 = Pick.new(Treadle.new(pick5_shafts, 5), T.must(block.thread(4)).color)
-    pick6 = Pick.new(Treadle.new(pick6_shafts, 6), T.must(block.thread(5)).color)
+    picks = []
 
-    [pick1, pick2, pick3, pick4, pick5, pick6]
+    [pick1_shafts, pick2_shafts, pick3_shafts, pick4_shafts, pick5_shafts, pick6_shafts].each_with_index do |shafts, i|
+      picks << Pick.new(Treadle.new(shafts, i+1), block.thread(i).color)
+    end
+
+    picks
   end
 
   sig { params(picks_for_a: T::Array[Pick], picks_for_b: T::Array[Pick]).returns(T::Array[Pick]) }

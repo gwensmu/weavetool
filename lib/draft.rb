@@ -7,14 +7,22 @@ require_relative './entities'
 # and weaving plan
 class Draft
   extend T::Sig
-  attr_reader :profile, :tieup, :treadling
+
+  sig { returns(Profile) }
+  attr_reader :profile
+
+  sig { returns(Tieup) }
+  attr_reader :tieup
+
+  sig { returns(T::Array[Treadle]) }
+  attr_reader :treadling
 
   sig { params(profile: Profile, tieup: Tieup, treadling: T::Array[Treadle]).void }
   def initialize(profile, tieup, treadling)
-    @profile = profile
-    @tieup = tieup 
-    @treadling = treadling
-    @drawdown = drawdown
+    @profile = T.let(profile, Profile)
+    @tieup = T.let(tieup, Tieup)
+    @treadling = T.let(treadling, T::Array[Treadle])
+    @drawdown = T.let(drawdown, T::Array[T::Array[String]])
   end
 
   sig { params(weft_color: String).returns(T::Array[T::Array[String]]) }
@@ -38,6 +46,7 @@ class Draft
     @profile.blocks.map(&:units).flatten.map(&:threading).reduce([]) { |u1, u2| u1 + u2 }
   end
 
+  sig {void}
   def render_drawdown
     svg = Victor::SVG.new width: 500, height: 500, style: { background: '#ddd' }
 
