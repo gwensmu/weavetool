@@ -22,12 +22,12 @@ class Draft
     acc = []
 
     @treadling.each do |treadle|
-      pick = []
+      row = []
       shafts = Set.new(treadle.shafts)
       threading.each do |heddle|
-        shafts.include?(heddle.shaft) ? pick.append(heddle.color) : pick.append(weft_color)
+        shafts.include?(heddle.shaft) ? row.append(heddle.color) : row.append(weft_color)
       end
-      acc.append(pick)
+      acc.append(row)
     end
 
     acc
@@ -39,16 +39,15 @@ class Draft
   end
 
   def render_drawdown
-    svg = Bundler::Settings::Mirror::SVG.new width: 500, height: 500, style: { background: '#ddd' }
+    svg = Victor::SVG.new width: 500, height: 500, style: { background: '#ddd' }
 
-    picks = @drawdown
-    vertical_repeats = picks[0].length / threading.length
+    rows = @drawdown
+    vertical_repeats = rows[0].length / threading.length
     svg.build do
       vertical_repeats.times do |v|
-        picks.each_with_index do |pick, i|
-          pick.each do |p|
-            col = p.shaft - 1
-            rect x: 10*i, y: (10*col) + (10*v), width: 10, height: 10, fill: color
+        rows.each_with_index do |row, i|
+          row.each_with_index.each do |cell, y|
+            rect x: 10*i, y: (10*y) + (10*v), width: 10, height: 10, fill: cell
           end
         end
       end

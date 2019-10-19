@@ -89,7 +89,7 @@ class Treadle
   sig { returns(T::Array[Integer]) }
   attr_reader :shafts
   
-  sig { params(shafts: T::Array[Integer], position: Integer).void }
+  sig { params(shafts: T::Array[T.any(Integer, T::Array[Integer])], position: Integer).void }
   def initialize(shafts, position)
     @shafts = T.let(shafts.flatten.sort, T::Array[Integer])
     @position = T.let(position, Integer)
@@ -125,7 +125,7 @@ class Pick
     @color = T.let(color, String)
   end
 
-  sig {returns(T::Array[Integer])}
+  sig {returns(T::Array[T.any(Integer, T::Array[Integer])])}
   def shafts 
     @treadle.shafts
   end
