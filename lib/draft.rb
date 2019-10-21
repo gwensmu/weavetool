@@ -46,7 +46,7 @@ class Draft
     @profile.blocks.map(&:units).flatten.map(&:threading).reduce([]) { |u1, u2| u1 + u2 }
   end
 
-  sig {void}
+  sig { returns(String) }
   def render_drawdown
     svg = Victor::SVG.new width: 500, height: 500, style: { background: '#ddd' }
 
@@ -61,6 +61,7 @@ class Draft
         end
       end
     end
-    svg.save 'draft'
+    svg.save 'draft' # todo: remove reliance on side effect
+    svg.render
   end
 end

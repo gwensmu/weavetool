@@ -54,10 +54,8 @@ RSpec.describe 'Draft' do
       expect(pick[3]).to eq '#FFF'
     end
 
-    # todo: need to make this visually recognizable,
-    # and test real stuff
     it 'can render the drawdown as an svg' do
-      draft.render_drawdown
+      expect(draft.render_drawdown).to include('<rect x="0" y="0" width="10" height="10" fill="green"/>')
     end
   end
 end
