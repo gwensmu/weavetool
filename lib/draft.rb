@@ -51,17 +51,15 @@ class Draft
     svg = Victor::SVG.new width: 500, height: 500, style: { background: '#ddd' }
 
     rows = @drawdown
-    vertical_repeats = rows[0].length / threading.length
+
     svg.build do
-      vertical_repeats.times do |v|
-        rows.each_with_index do |row, i|
-          row.each_with_index.each do |cell, y|
-            svg.rect x: 10*i, y: (10*y) + (10*v), width: 10, height: 10, fill: cell
-          end
+      rows.each_with_index do |row, i|
+        row.each_with_index do |cell, y|
+          svg.rect x: 10*y, y: 10*i, width: 10, height: 10, fill: cell
         end
       end
     end
-    svg.save 'draft' # todo: remove reliance on side effect
+    svg.save 'draft' # todo: remove reliance on side effect in spec
     svg.render
   end
 end
