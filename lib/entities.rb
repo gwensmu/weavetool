@@ -29,7 +29,7 @@ class Unit
   sig { returns(T::Array[Heddle]) }
   attr_reader :threading
 
-  sig { params(heddles: T.untyped).void }
+  sig { params(heddles: T::Array[Heddle]).void }
   def initialize(heddles)
     @threading = T.let(heddles, T::Array[Heddle])
   end
@@ -47,7 +47,7 @@ class Block
   sig { returns(Unit) }
   attr_reader :unit
 
-  sig { params(unit: T.untyped, count: T.untyped).void }
+  sig { params(unit: Unit, count: Integer).void }
   def initialize(unit, count)
     @unit = T.let(unit, Unit)
     @count = T.let(count, Integer)
@@ -58,6 +58,11 @@ class Block
     acc = []
     @count.times { acc.append @unit }
     acc
+  end
+
+  sig {params(n: T.any(Integer, Float)).returns(Heddle)}
+  def thread(n)
+    unit.threading[n]
   end
 end
 
@@ -85,9 +90,9 @@ class Treadle
   sig { returns(T::Array[Integer]) }
   attr_reader :shafts
   
-  sig { params(shafts: T::Array[Integer], position: Integer).void }
+  sig { params(shafts: T::Array[T.any(Integer, T::Array[Integer])], position: Integer).void }
   def initialize(shafts, position)
-    @shafts = T.let(shafts, T::Array[Integer])
+    @shafts = T.let(shafts.flatten.sort, T::Array[Integer])
     @position = T.let(position, Integer)
   end
 end
@@ -115,13 +120,13 @@ class Pick
   sig { returns(String) }
   attr_reader :color
 
-  sig {params(treadle: T.untyped, color: T.untyped).void}
+  sig {params(treadle: Treadle, color: String).void}
   def initialize(treadle, color)
     @treadle = T.let(treadle, Treadle)
     @color = T.let(color, String)
   end
 
-  sig {returns(T::Array[Integer])}
+  sig {returns(T::Array[T.any(Integer, T::Array[Integer])])}
   def shafts 
     @treadle.shafts
   end
