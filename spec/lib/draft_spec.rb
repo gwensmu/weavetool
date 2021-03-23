@@ -20,9 +20,7 @@ RSpec.describe 'Draft' do
   let(:treadle3) { Treadle.new([3], 3) }
 
   let(:tieup) { Tieup.new([treadle1, treadle2, treadle3]) }
-
-  let(:treadling) { [treadle1, treadle2, treadle3, treadle2] }
-
+  let(:treadling) { [treadle1, treadle2, treadle3, treadle1, treadle2, treadle3] }
   let(:draft) { Draft.new(profile, tieup, treadling) }
 
   it 'can be initialized' do
@@ -46,7 +44,7 @@ RSpec.describe 'Draft' do
       expect(drawdown.map(&:length).uniq.first).to eq draft.threading.length
     end
 
-    it 'draws the correct color for each cell a pick' do
+    it 'draws the correct color for each cell in a pick' do
       pick = drawdown[0]
       expect(pick[0]).to eq 'green'
       expect(pick[1]).to eq '#FFF'
@@ -55,7 +53,7 @@ RSpec.describe 'Draft' do
     end
 
     it 'can render the drawdown as an svg' do
-      draft.render_drawdown
+      expect(draft.render_drawdown).to include('<rect x="0" y="0" width="10" height="10" fill="green"/>')
     end
   end
 end

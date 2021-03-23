@@ -24,21 +24,20 @@ module TripleWeave
 
   sig { params(face: Integer, middle: Integer, reverse: Integer, block: Block).returns(T::Array[Pick]) }
   def self.treadling_for(face, middle, reverse, block)
-    pick1_shafts = [odd_shaft_for(face, block)].flatten.sort
-    pick2_shafts = [even_shaft_for(face, block)].flatten.sort
-    pick3_shafts = [shafts_for(face, block), odd_shaft_for(middle, block)].flatten.sort
-    pick4_shafts = [shafts_for(face, block), even_shaft_for(middle, block)].flatten.sort
-    pick5_shafts = [shafts_except(T.must(even_shaft_for(reverse, block)), block)].flatten.sort
-    pick6_shafts = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)].flatten.sort
+    pick1_shafts = [odd_shaft_for(face, block)]
+    pick2_shafts = [even_shaft_for(face, block)]
+    pick3_shafts = [shafts_for(face, block), odd_shaft_for(middle, block)]
+    pick4_shafts = [shafts_for(face, block), even_shaft_for(middle, block)]
+    pick5_shafts = [shafts_except(T.must(even_shaft_for(reverse, block)), block)]
+    pick6_shafts = [shafts_except(T.must(odd_shaft_for(reverse, block)), block)]
 
-    pick1 = Pick.new(Treadle.new(pick1_shafts, 1), T.must(block.unit.threading[0]).color)
-    pick2 = Pick.new(Treadle.new(pick2_shafts, 2), T.must(block.unit.threading[1]).color)
-    pick3 = Pick.new(Treadle.new(pick3_shafts, 3), T.must(block.unit.threading[2]).color)
-    pick4 = Pick.new(Treadle.new(pick4_shafts, 4), T.must(block.unit.threading[3]).color)
-    pick5 = Pick.new(Treadle.new(pick5_shafts, 5), T.must(block.unit.threading[4]).color)
-    pick6 = Pick.new(Treadle.new(pick6_shafts, 6), T.must(block.unit.threading[5]).color)
+    picks = []
 
-    [pick1, pick2, pick3, pick4, pick5, pick6]
+    [pick1_shafts, pick2_shafts, pick3_shafts, pick4_shafts, pick5_shafts, pick6_shafts].each_with_index do |shafts, i|
+      picks << Pick.new(Treadle.new(shafts, i+1), block.thread(i).color)
+    end
+
+    picks
   end
 
   sig { params(picks_for_a: T::Array[Pick], picks_for_b: T::Array[Pick]).returns(T::Array[Pick]) }
